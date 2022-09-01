@@ -27,7 +27,7 @@ x = pynet.Constant (np.array([
 y = pynet.Constant (np.array([
     [0.0],
     [1.0],
-    [1,0],
+    [1.0],
     [0.0]
 ]))
 
