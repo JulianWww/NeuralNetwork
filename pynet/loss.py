@@ -12,7 +12,7 @@ class MSE:
         return Tensor(1/(self.x.arr.size) * arr.dot(arr), self)
     
     def derivative(self):
-        dx = 2/(self.x.arr.size) * (self.x.arr - self.y.arr)
+        dx = 2/(self.x.arr.shape[0]) * (self.x.arr - self.y.arr)
         return dx, -dx
 
     def backup(self, lr):
@@ -22,4 +22,4 @@ class MSE:
         self.y.delta = dy
 
         self.x._backup(lr)
-        self.x._backup(lr)
+        self.y._backup(lr)

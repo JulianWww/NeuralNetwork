@@ -7,7 +7,7 @@ class Tensor:
         self.delta = None
     
     def __str__(self):
-        return f"{str(self.arr)}\n{self.delta}"
+        return f"{str(self.arr)}"
     
     def backup(self, value, lr):
         self.delta = self.arr - value.arr
@@ -30,5 +30,5 @@ class Constant(Tensor):
     def __init__(self, arr, function=None):
         super(Constant, self).__init__(arr, function)
 
-    def update(self):
+    def update(self, _):
         pass

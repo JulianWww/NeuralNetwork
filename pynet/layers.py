@@ -7,22 +7,28 @@ class DenseProcess:
         self.inp = inp
     
     def forward(self):
-        val = np.dot(self.layer.w.arr, self.inp.arr) + self.layer.b.arr
+        val = np.dot(self.inp.arr, self.layer.w.arr) + self.layer.b.arr
         return Tensor(val, self)
     
     def _backup(self, delta, lr):
-        self.layer.b.delta = delta
-        self.layer.w.delta = np.sum(np.dot(delta.reshape((delta.size, 1)), self.inp.arr.reshape(1, self.inp.arr.size)), axis=0)
-        self.inp.delta = np.dot(self.layer.w.arr.T, delta)
+        self.layer.b.delta = np.sum(delta, axis=0)
+        delta = np.expand_dims(delta, axis=1)
+        out = np.sum(np.matmul(
+            np.expand_dims(self.inp.arr, axis=2),
+            delta
+        ), axis=0)
+        self.layer.w.delta = out
+        self.inp.delta = np.dot(delta, self.layer.w.arr.T)[:,0]   
 
+    
         self.layer.w._backup(lr)
         self.layer.b._backup(lr)
         self.inp._backup(lr)
 
 class Dense:
     def __init__(self, input, output):
-        self.w = Tensor(np.random.rand(output, input))
-        self.b = Tensor(np.random.rand(output))
+        self.w = Tensor(2*np.random.rand(input, output)-1)
+        self.b = Tensor(2*np.random.rand(1, output)-1)
     
     def forward(self, inp):
         process = DenseProcess(inp, self)
